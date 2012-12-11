@@ -1,0 +1,203 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%2345678901234567890123456789012345678901234567890123456789012345678901234567890
+%        1         2         3         4         5         6         7         8
+
+\documentclass[letterpaper, 10 pt, conference]{ieeeconf}  % Comment this line out
+                                                          % if you need a4paper
+%\documentclass[a4paper, 10pt, conference]{ieeeconf}      % Use this line for a4
+                                                          % paper
+
+\IEEEoverridecommandlockouts                              % This command is only
+                                                          % needed if you want to
+                                                          % use the \thanks command
+\overrideIEEEmargins
+% See the \addtolength command later in the file to balance the column lengths
+% on the last page of the document
+
+
+
+\usepackage{draftwatermark}
+% The following packages can be found on http:\\www.ctan.org
+%\usepackage{graphics} % for pdf, bitmapped graphics files
+%\usepackage{epsfig} % for postscript graphics files
+%\usepackage{mathptmx} % assumes new font selection scheme installed
+%\usepackage{times} % assumes new font selection scheme installed
+%\usepackage{amsmath} % assumes amsmath package installed
+%\usepackage{amssymb}  % assumes amsmath package installed
+
+\title{\LARGE \bf
+Catching projectiles using Multi-Goal Path Planning
+}
+
+\author{Juan Garcia, Harrison Jones and Arash Rouhani*
+  \thanks{\texttt{*\{jgarcia39,harrisonhjones,rarash\}@gatech.edu}}
+}
+
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+\pagestyle{empty}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{abstract}
+
+The issues of catching a moving projectile can be divided into two sets,
+the first set of issues is to perceive the object and to estimate its
+future path.  The second set of issues is to knowing a trajectory find
+the best stance to catch the object in. In this paper, we focus mainly
+on the second issue but we also insert simple models of vision
+distortion and path regression to complete the model of the application.
+The approach to select one out of multiple robot arm stances we take is
+multi-goal path planning, we introduce a modified version of
+Rapidly-Exploring Random Trees (RRTs) that can grow to multiple goals.
+We benchmarked our Multi-goal RRT in a simulated environment but got
+beaten by the regular RRT.
+
+\end{abstract}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{INTRODUCTION}
+
+\subsection{Motivation}
+
+The motivation for this project came from two sources. One is a video which
+illustrates a robot capable of "catching" a piece of trash thrown using a
+vision system and limited path planning. The little trash robot is pretty
+interesting, and useful, and initially the thought of expanding on the idea was
+toyed with. The other source of motivation came from a previous piece of work
+performed under Professor Mike Stillman at Georgia Tech. Previously a group
+under Stillman had worked on an algorithm which blocked known sword path,s in a
+simulated environment. The group had not explored the idea of predicting a
+sword swing given the current path of the sword.
+
+\subsection{Problem}
+
+These two interesting ideas were combined into a "general purpose" problem
+which covered both motivating sources. The problem therefore tackled in this
+project is how to intercept a moving object using a robot arm in a noisy
+simulated environment given limited information on that path of the object.
+This problem is interesting because it is fairly general purpose covers a great
+number of practical applications such as catching balls, blocking punches,
+military applications, etc.
+
+\subsection{Solution}
+
+The solution described in this paper utilizes an algorithm which tracks the
+objects, predicts its future path, and then moves a virtual robot arm to
+intercept the object. This is done by using two different prediction
+algorithms, a linear predictor, used for punching, handshakes, etc, and a
+quadratic predictor, used for projectile objects such as trash or balls. After
+computing a predicted path a multi-goal RRT is used to move the robot arm to
+intercept the object while still avoiding obstacles in its environment.
+
+
+
+\section{RELATED WORK}
+
+An extension of RRTs for multi goal purposes is introduced here. There are also
+other approaches to solving multi-goal motion planning (add referencess). As
+for the modeling of the projectile motion, nothing is used from academia.
+
+\section{METHODS}
+
+We'll cover the methods in the order they are used in a complete simulation.
+First, we must generate a projectile path, then distortion is applied. In order
+to know where it's possible to catch the object some path prediction is used.
+Then to actually get a series of possible robot stances, inverse kinematics is
+applied to get some corresponding joint configuration for each projectile
+position. Finally, and most highlighted part in this paper, we search for the
+easiest to reach joint space configuration. It should be noted that this whole
+process is done iteratively, at fixed time steps we replan taking in account
+the most recent observation of the projectile.
+
+\subsection{Path Projection}
+
+We basically use a discretized version of:
+
+\[
+  x(t) = vt + at^2
+\]
+
+where we set $a = -g$ where $g$ is some gravity constant.
+
+\subsubsection{Distortion}
+
+We basically use a discretized version of:
+
+\[
+  x_{observed}(t) = x(t) + noise
+\]
+
+Some sort of wind is also an extension to this, but is modeled by setting to
+$a$ to $-g+c$ where $c$ is constant.
+
+\subsection{Path Prediction}
+
+Given some sample points, we look at the last ones and work backwards from two
+assumed equations, one that models linear motion and the other models
+projectile motion. The equation
+
+\[
+  x_{observed}(t) = vt + at^2
+\]
+
+will cover both cases, only that you set $a=0$ in the linear version.
+
+Note that this is of course not exact as it does not compensate for the unknown
+noise, in order to compensate for the noise one can look at chunks of points as
+one point and work backwards from that.
+
+\subsection{Inverse kinematics}
+
+Knowing the trajectory, one can use inverse kinematics to find a corresponding
+joint space configuration. We do use the pseudo inverse jacobian method.
+
+\subsubsection{Distance in joint space}
+
+We defined distance as the infinity norm.
+
+\subsection{Planning}
+
+We compare the results using a single goal rrt and a multi goal rrt. The multi
+goal rrt is a regular rrt only that it yields the first path that leads to any
+of the goals. When it does a greedy expansion to a goal, it randomly picks the
+goal to grow towards.
+
+\subsection{Replanning}
+
+With a fixed $\Delta t$ we keep iterating and do replanning as more information
+of the trajectory gets available all the time.
+
+\section{EXPERIMENTS}
+
+Our test environment consisted of a 7 joint robot with only a few objects around it. All of the objects were on the ground. The object was always shot from X meters away towards the hand.
+
+In this setting single goal rrt won.
+
+\section{ANALYSIS}
+
+Multi goal rrt might have been changing its mind all the time between each replanning making it distracted.
+
+\section{DISCUSSION}
+
+It would be interesting to test the algorithms in an environment where there
+are more objects that the arm can't touch. Also, the multi goal rrt does not
+need to stop once it reaches one goal, it could instead keep expanding until it
+hits all goals and then pick the one with the shortest path.
+
+As an extra benefit to both rrt planners, path shortening could be applied.
+
+\begin{thebibliography}{99}
+
+\bibitem{c1} TODO: Add real references
+
+\end{thebibliography}
+
+
+
+
+\end{document}
