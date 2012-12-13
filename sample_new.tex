@@ -205,7 +205,8 @@ until convergence where $\mathbf{J}^{+} =
 
 \subsection{Planning}
 
-We plan with either one of the two algorithms, the regular RRT and the
+We plan with either one of the two algorithms, the regular RRT
+and the
 multi-goal RRT that is introduced in this paper. Which of the two we use
 will depend on the parameters we set before we start a single
 simulation.
@@ -233,13 +234,19 @@ goal keeps growing until \emph{any} goal has been reached while the
 other strategy keeps growing the tree until \emph{all} goals have been
 reached.
 
-As for the concepts of greedy, connect and bidirectional in the rrt,
-only greedy and the connect strategy is applicable to the multi goal
-rrt, and we consider the connect strategy to defeat the purpose of the
-multi goal rrt, as if we have an extreme case where there are no objects
-to block the path, connect would just randomly pick any of the goals and
-keep growing to it and the purpose of choosing the goal with the closest
-distance with respect to objects is defeated.
+As for the concepts of greedy, connect and bidirectional, only greedy
+and the connect strategy is applicable to the multi goal rrt. The
+original greedy strategy takes the goal and grows towards it. In our
+case we take any of the goals randomly and grow towards
+it\cite{rrt-greedy}. As for connect one would imagine growing towards a
+random configuration keep iterating towards, just like the original
+does\cite{kuffner2000rrt}.  takes the goal and grows towards i
+
+We consider the connect strategy to defeat the purpose of the
+multi goal rrt, as if we have an extreme case where there are no objects to
+block the path, connect would just randomly pick any of the goals and keep
+growing to it and the purpose of choosing the goal with the closest distance
+with respect to objects is defeated.
 
 \subsection{Replanning}
 
@@ -267,11 +274,15 @@ hits all goals and then pick the one with the shortest path.
 
 As an extra benefit to both rrt planners, path shortening could be applied.
 
-\begin{thebibliography}{99}
 
-\bibitem{c1} TODO: Add real references
+\bibliographystyle{plain}
+\bibliography{mybib}
 
-\end{thebibliography}
+% \begin{thebibliography}{99}
+
+% \bibitem{c1} TODO: Add real references
+
+% \end{thebibliography}
 
 
 
