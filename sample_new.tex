@@ -350,69 +350,106 @@ in the following section.
       Quadratic predictors where $\mu = 0.05$}\label{fig:runtimes}
 \end{figure}
 
-Figure 3. Avg. Multi-Goal RRT success rate vs. increasing noise with Linear Predictor; 10 simulations for each increase in 0.05 noise.
 
 
-
-
-Figure 4. Avg. Single-goal RRT success rate vs. increasing noise with Linear Predictor; 10 simulations for each increase in 0.05 noise.
-
-
-Figure 5. Avg. completion times for Single-goal and Multi-goal RRTs after 100 simulations with both Linear and Quadratic predictors; noise = 0.05.
-
-
-
-Analysis
-Figure 1 shows the success rates for combinations of Multi-goal and Single-goal with Linear and Quadratic predictors after 100 simulations with a noise of 0.05. In both cases, the Single-goal approach achieves a higher success rate than the Multi-goal approach. The difference in such success, an average of 3 percent units, is not enough to conclude the dominance of one method over the other for this given noise amount. In addition, the quadratic predictor seems to yield higher success rates when used by both approaches with this noise amount, indicating the better representation of the projectile path by our predicting equations. 
-Figure 2, in contrast, showcases a much more interesting scenario. With a noise amount of 0.09, the Multi-goal and Single-goal approaches achieve similar success rates (about 87 percent) when employing the Linear predictor. When the approaches utilize the Quadratic predictors their success rates drop by a combined average of 8 percent units. In this case, the Multi-goal approach achieves a noticeably lower success rate. With a significant increase in sensor noise, the robotic arm’s perceived sphere path does not longer follow projectile motion characteristics as the sphere bounces around. In this case, the Quadratic predictor in a way overfits the model as it uses 3 averaging points to predict a curved motion. The Linear predictor only predicts line trajectories that with a clutter of perceived points yield higher accuracy rates. 
-
----Add analysis of why Multi does badly with Quadratic---
-
-Figures 3 and 4 depict the performance of both the Single-goal and Multi-goal RRT approaches as the noise amount increases. A Linear predictor was utilized in both cases as previous analysis demonstrated its robustness to sensor noise. For each noise case, the average success rate of 10 simulations was computed. Both approaches’ rates steadily drop as the amount of noise increases, with the Single-goal RRT staying above 90% for noise sources between 0 and 0.1 while the Multi-goal RRT only for value between 0 and 0.05. The similar behavior of both approaches regarding an increase in noise showcases the need to implement better prediction techniques, as the current ones are only naive approaches to tackle such noise and uncertainty scenarios. A more thorough analysis of these approaches’ response in noisy situations would be achieved through known regression and estimation techniques. Time constraints forced these topics to be considered for future work. 
-At last, Figure 4 presents the average execution times during 100 simulations of Single-goal and Multi-goal RRTs with Linear predictors. Multi-goal RRTs achieve faster execution times (i.e. 200ms difference) than Single-goal RRTs as the tree growth is biased by all reachable points of the sphere trajectories. When any goal is reached, reaching the rest is not computationally expensive as these points are expected to be mostly close in space and time. Single-goal RRTs in contrast, constantly expands the tree towards the closest point in terms of joint-space distance, thus taking longer to get there. 
-
-
-
-
-
-
-
-
-
-
-
-
-
-Our test environment consisted of a 7 joint robot with only a few
-objects around it. All of the objects were on the ground. The object was
-always shot from X meters away towards the hand.
-
-In this setting single goal rrt won.
 
 \section{ANALYSIS}
 
-Multi goal rrt might have been changing its mind all the time between each replanning making it distracted.
+Figure \ref{fig:noise-005} shows the success rates for combinations of
+Multi-goal and Single-goal with Linear and Quadratic predictors after
+100 simulations with a noise of 0.05. In both cases, the Single-goal
+approach achieves a higher success rate than the Multi-goal approach.
+The difference in such success, an average of 3 percent units, is not
+enough to conclude the dominance of one method over the other for this
+given noise amount. In addition, the quadratic predictor seems to yield
+higher success rates when used by both approaches with this noise
+amount, indicating the better representation of the projectile path by
+our predicting equations.
+
+Figure \ref{fig:noise-009} , in contrast, showcases a much more
+interesting scenario. With a noise amount of 0.09, the Multi-goal and
+Single-goal approaches achieve similar success rates (about 87 percent)
+when employing the Linear predictor. When the approaches utilize the
+Quadratic predictors their success rates drop by a combined average of 8
+percent units. In this case, the Multi-goal approach achieves a
+noticeably lower success rate. With a significant increase in sensor
+noise, the robotic arm’s perceived sphere path does not longer follow
+projectile motion characteristics as the sphere bounces around. In this
+case, the Quadratic predictor in a way overfits the model as it uses 3
+averaging points to predict a curved motion. The Linear predictor only
+predicts line trajectories that with a clutter of perceived points yield
+higher accuracy rates.
+
+% TODO ---Add analysis of why Multi does badly with Quadratic---
+
+Figure \ref{fig:rrts} depict the performance of both the Single-goal and
+Multi-goal RRT approaches as the noise amount increases. A Linear
+predictor was utilized in both cases as previous analysis demonstrated
+its robustness to sensor noise. For each noise case, the average success
+rate of 10 simulations was computed. Both approaches’ rates steadily
+drop as the amount of noise increases, with the Single-goal RRT staying
+above 90\% for noise sources between 0 and 0.1 while the Multi-goal RRT
+only for value between 0 and 0.05. The similar behavior of both
+approaches regarding an increase in noise showcases the need to
+implement better prediction techniques, as the current ones are only
+naive approaches to tackle such noise and uncertainty scenarios. A more
+thorough analysis of these approaches’ response in noisy situations
+would be achieved through known regression and estimation techniques.
+Time constraints forced these topics to be considered for future work.
+
+At last, Figure \ref{fig:runtimes} presents the average execution times
+during 100 simulations of Single-goal and Multi-goal RRTs with Linear
+predictors. Multi-goal RRTs achieve faster execution times (i.e. 200ms
+difference) than Single-goal RRTs as the tree growth is biased by all
+reachable points of the sphere trajectories. When any goal is reached,
+reaching the rest is not computationally expensive as these points are
+expected to be mostly close in space and time. Single-goal RRTs in
+contrast, constantly expands the tree towards the closest point in terms
+of joint-space distance, thus taking longer to get there.
 
 \section{DISCUSSION}
 
-It would be interesting to test the algorithms in an environment where there
-are more objects that the arm can't touch. Also, the multi goal rrt does not
-need to stop once it reaches one goal, it could instead keep expanding until it
-hits all goals and then pick the one with the shortest path.
+It would be interesting to test the algorithms in an environment where
+there are more objects that the arm can't touch. Such experiments might
+lift the potential from multi goal rrts,  if a multi goal rrt should
+prove useful against the single goal rrt aimed at the closest goal, it
+must expand a towards a more distant goal which in fact is closer with
+respect to there being objects in the way for reaching the close goal.
+While there might be many factors for the results for figure
+\ref{fig:runtimes}, one might guess that the approximately equal
+runtimes was due to that they reached their goal in the same amount of
+steps and that is because the closest goal without respect to object was
+the same goal with respect to objects. On the other hand then one might
+expect their perforemence over all be quite similar which it appears not
+to be from figure \ref{fig:noise} and \ref{fig:rrts}, maybe it's
+decrease in performence was simply due to it usually founds the same
+closest object but occasionally in between the iterations detours to
+another goal making it somewhat more clumsy.
 
-As an extra benefit to both rrt planners, path shortening could be applied.
+Another idea stemming from the discussion above is to not actually do
+replanning, since the nature of randomness in the rrt makes it unoptimal
+and it would be better to commiting to trying to reach one particular
+stance rather than reevaluating the situation all the time and go for
+occasional detours. A great future work would be to actually analyze if
+the multi goal rrt does take detours or not.
 
+We mentioned an alternative strategy for the multi goal rrt.  The strategy
+basically was to not stop once it reaches it's first goal, instead
+expanding until it hits all goals and then pick the one with the
+shortest path. The idea is that this should not be computationally
+expensive at all because
+
+As an extra benefit to both rrt planners, path shortening could be
+applied. Here one can also try to use some sort of lazy path shortening,
+utilizing the fact that since replanning occurs so often you only need
+to know the beginning of a plan.
+
+It must also be said that the most obvious improvements for actually
+having a good moving object interceptor would be to improve upon the
+path prediction, using standard tools like linear/quadratic regression
+or kalman filters.
 
 \bibliographystyle{plain}
 \bibliography{mybib}
-
-% \begin{thebibliography}{99}
-
-% \bibitem{c1} TODO: Add real references
-
-% \end{thebibliography}
-
-
-
 
 \end{document}
