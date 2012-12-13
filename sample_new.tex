@@ -17,12 +17,14 @@
 
 
 % The following packages can be found on http:\\www.ctan.org
-%\usepackage{graphics} % for pdf, bitmapped graphics files
-%\usepackage{epsfig} % for postscript graphics files
-%\usepackage{mathptmx} % assumes new font selection scheme installed
-%\usepackage{times} % assumes new font selection scheme installed
-%\usepackage{amsmath} % assumes amsmath package installed
-%\usepackage{amssymb}  % assumes amsmath package installed
+\usepackage{graphics} % for pdf, bitmapped graphics files
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{epsfig} % for postscript graphics files
+\usepackage{mathptmx} % assumes new font selection scheme installed
+\usepackage{times} % assumes new font selection scheme installed
+\usepackage{amsmath} % assumes amsmath package installed
+\usepackage{amssymb}  % assumes amsmath package installed
 
 \title{\LARGE \bf
 Interception of moving objects with a robotic arm in a simulated environment
@@ -210,14 +212,10 @@ until convergence where $\mathbf{J}^{+} =
 \subsection{Planning}
 
 We plan with either one of the two algorithms, the regular RRT
-and the
+\cite{lavalle2001randomized} and the
 multi-goal RRT that is introduced in this paper. Which of the two we use
 will depend on the parameters we set before we start a single
 simulation.
-
-\subsubsection{Traditional RRT}
-
-We defined distance as the infinity norm.
 
 \subsubsection{Multi-goal RRT}
 
@@ -238,26 +236,152 @@ goal keeps growing until \emph{any} goal has been reached while the
 other strategy keeps growing the tree until \emph{all} goals have been
 reached.
 
-As for the concepts of greedy, connect and bidirectional, only greedy
-and the connect strategy is applicable to the multi goal rrt. The
-original greedy strategy takes the goal and grows towards it. In our
-case we take any of the goals randomly and grow towards
-it\cite{robocup, FergusonKS06}. As for connect one would imagine growing towards a
-random configuration keep iterating towards, just like the original
-does\cite{kuffner2000rrt}.  takes the goal and grows towards i
+As for the concepts of greedy, connect and bidirectional, only greedy and the
+connect strategy is applicable to the multi goal rrt. The original greedy
+strategy takes the goal and grows towards it\cite{robocup, FergusonKS06}. In
+our case we take any of the goals randomly and grow towards it. As for connect
+one would imagine growing towards a random configuration and then keep growing
+to the same configuration until one collides, just like the original connect
+algorithm does\cite{kuffner2000rrt}. We will, however, only use the greedy goal
+biasing in both our regular rrt implementation and multi-goal rrt. The reason
+for this was to make the behavior easier to reason about than it would be if
+multiple features could cause unexpected results.
 
-We consider the connect strategy to defeat the purpose of the
-multi goal rrt, as if we have an extreme case where there are no objects to
-block the path, connect would just randomly pick any of the goals and keep
-growing to it and the purpose of choosing the goal with the closest distance
-with respect to objects is defeated.
+% We consider the connect strategy to defeat the purpose of the
+% multi goal rrt, as if we have an extreme case where there are no objects to
+% block the path, connect would just randomly pick any of the goals and keep
+% growing to it and the purpose of choosing the goal with the closest distance
+% with respect to objects is defeated.
 
-\subsection{Replanning}
+\subsubsection{Arm speed and using the path}
 
-With a fixed $\Delta t$ we keep iterating and do replanning as more information
-of the trajectory gets available all the time.
+
+
+\subsection{Replanning, Discretization and Arm Speed}
+
+Before one iteration is done and we start replanning with the most
+recently observed data we move the arm. For the simulation to be
+realistic, the  maximum distance the arm can move must be limitied for
+each time step. The question is how distance is measured, or rather in
+which norm. Most realistically for our application might have been the
+infinity norm, which means that all joints are allowed to rotate a fixed
+amount of degrees independent of each other. Regardless of that we used
+regular euclidean distance, the two norm. The reason is that it was easy
+to implement because you can set the step size parameter to the rrt and
+interpret the second position it its returned path as the next position
+for the arm.
+
+With the joints configured to their now angles, we increase the
+simulation time by the fixed $\Delta t$ and keep iterating and replan as
+more information of the trajectory gets available when time increases.
 
 \section{EXPERIMENTS}
+
+The experimentation and accompanied development were targeted towards (1)
+determining the robustness of the approaches presented to noise sources and (2)
+selecting the best combination of predictors and RRT-variants for use in a
+future non-simulated setting. The overall approach presented in the previous
+sections was tested in the DART/GRIP environment through a developed interface
+that allowed for the specification of different amounts of noise, number of
+simulations, predictor type, among other parameters.  The results were analyzed
+according to the following criteria: (i) success rate given an amount of noise,
+(ii) success rate vs. increasing amounts of noise for different combinations of
+RRT-variants and predictors, (iii) completion time given an amount of noise.
+Success rate was defined as the amount of times the arm was able to intercept
+the moving sphere divided by the total number of simulations (i.e. a
+percentage). The workspace distance d between the arm’s end-effector and the
+moving sphere was repeatedly calculated in order to determine whether an
+interception had occurred. If d was less than a given threshold t, then the arm
+successfully intercepted the moving sphere. In this case, t was set to the
+radius of the sphere (i.e. 0.12).  The graphs shown below summarize the results
+of the experiments undertaken. Their connotations and insights will be analyzed
+in the following section.
+
+\begin{figure}
+        \centering
+        \begin{subfigure}[b]{0.25\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{fig/noise-005}
+                \caption{$\mu = 0.05$}
+                \label{fig:noise-005}
+        \end{subfigure}%
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc. 
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.2\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{fig/noise-009}
+                \caption{$\mu = 0.09$}
+                \label{fig:noise-009}
+        \end{subfigure}
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc. 
+          %(or a blank line to force the subfigure onto a new line)
+        \caption{Success rates for combinations of Multi-Goal RRT, Single-RRT, Linear and Quadratic predictors after 100 simulations having varying noise $\mu$}\label{fig:noise}
+\end{figure}
+
+
+\begin{figure}
+        \centering
+        \begin{subfigure}[b]{0.22\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{fig/multi}
+                \caption{Multi goal RRT}
+                \label{fig:multi}
+        \end{subfigure}%
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc. 
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.24\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{fig/single}
+                \caption{Single goal RRT}
+                \label{fig:single}
+        \end{subfigure}
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc. 
+          %(or a blank line to force the subfigure onto a new line)
+        \caption{Average RRT success rates versus increasing noise
+        with Linear Predictor; 10 simulations for each increase in 0.05
+      noise}\label{fig:rrts}
+\end{figure}
+
+\begin{figure}
+        \centering
+        \includegraphics[width=3in]{fig/runtimes}
+        \caption{Average times for Single-goal and
+        Multi-goal RRTs after 100 simulations with both Linear and
+      Quadratic predictors where $\mu = 0.05$}\label{fig:runtimes}
+\end{figure}
+
+Figure 3. Avg. Multi-Goal RRT success rate vs. increasing noise with Linear Predictor; 10 simulations for each increase in 0.05 noise.
+
+
+
+
+Figure 4. Avg. Single-goal RRT success rate vs. increasing noise with Linear Predictor; 10 simulations for each increase in 0.05 noise.
+
+
+Figure 5. Avg. completion times for Single-goal and Multi-goal RRTs after 100 simulations with both Linear and Quadratic predictors; noise = 0.05.
+
+
+
+Analysis
+Figure 1 shows the success rates for combinations of Multi-goal and Single-goal with Linear and Quadratic predictors after 100 simulations with a noise of 0.05. In both cases, the Single-goal approach achieves a higher success rate than the Multi-goal approach. The difference in such success, an average of 3 percent units, is not enough to conclude the dominance of one method over the other for this given noise amount. In addition, the quadratic predictor seems to yield higher success rates when used by both approaches with this noise amount, indicating the better representation of the projectile path by our predicting equations. 
+Figure 2, in contrast, showcases a much more interesting scenario. With a noise amount of 0.09, the Multi-goal and Single-goal approaches achieve similar success rates (about 87 percent) when employing the Linear predictor. When the approaches utilize the Quadratic predictors their success rates drop by a combined average of 8 percent units. In this case, the Multi-goal approach achieves a noticeably lower success rate. With a significant increase in sensor noise, the robotic arm’s perceived sphere path does not longer follow projectile motion characteristics as the sphere bounces around. In this case, the Quadratic predictor in a way overfits the model as it uses 3 averaging points to predict a curved motion. The Linear predictor only predicts line trajectories that with a clutter of perceived points yield higher accuracy rates. 
+
+---Add analysis of why Multi does badly with Quadratic---
+
+Figures 3 and 4 depict the performance of both the Single-goal and Multi-goal RRT approaches as the noise amount increases. A Linear predictor was utilized in both cases as previous analysis demonstrated its robustness to sensor noise. For each noise case, the average success rate of 10 simulations was computed. Both approaches’ rates steadily drop as the amount of noise increases, with the Single-goal RRT staying above 90% for noise sources between 0 and 0.1 while the Multi-goal RRT only for value between 0 and 0.05. The similar behavior of both approaches regarding an increase in noise showcases the need to implement better prediction techniques, as the current ones are only naive approaches to tackle such noise and uncertainty scenarios. A more thorough analysis of these approaches’ response in noisy situations would be achieved through known regression and estimation techniques. Time constraints forced these topics to be considered for future work. 
+At last, Figure 4 presents the average execution times during 100 simulations of Single-goal and Multi-goal RRTs with Linear predictors. Multi-goal RRTs achieve faster execution times (i.e. 200ms difference) than Single-goal RRTs as the tree growth is biased by all reachable points of the sphere trajectories. When any goal is reached, reaching the rest is not computationally expensive as these points are expected to be mostly close in space and time. Single-goal RRTs in contrast, constantly expands the tree towards the closest point in terms of joint-space distance, thus taking longer to get there. 
+
+
+
+
+
+
+
+
+
+
+
+
 
 Our test environment consisted of a 7 joint robot with only a few
 objects around it. All of the objects were on the ground. The object was
