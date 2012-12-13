@@ -43,17 +43,7 @@ Interception of moving objects with a robotic arm in a simulated environment
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
 
-The issues of catching a moving projectile can be divided into two sets,
-the first set of issues is to perceive the object and to estimate its
-future path.  The second set of issues is to knowing a trajectory find
-the best stance to catch the object in. In this paper, we focus mainly
-on the second issue but we also insert simple models of vision
-distortion and path regression to complete the model of the application.
-The approach to select one out of multiple robot arm stances we take is
-multi-goal path planning, we introduce a modified version of
-Rapidly-Exploring Random Trees (RRTs) that can grow to multiple goals.
-We benchmarked our Multi-goal RRT in a simulated environment but got
-beaten by the regular RRT.
+The problem of catching a moving object can be divided into two sub problems: first the obeject must be perceive and its path must be estimatated so movements can be calculated that would result in successfully catching the object in the future. The second sub problem is, once a future path has been estimated, to find a catching configuration. This paper focuses primarily on the second problem of finding an acceptable configuration. Simple models which simulate sensor inaccuracy and randomness are used to closely simulate real environments and  regression models are used to estimate the objects path in these simulated real environments. Because  multiple end configurations are acceptable if the goal is simply to catch the object, a multi-goal RRT, a modified version of Rapidly-exploring Random Trees (RRTs) which grows towards multiple goals simultaneously, was implemented in an attempt to have the RRT grow toward several predicted path nodes. The multi-goal RRT was compared against a regular RRT and was found to be inferior to regular RRTs in most cases
 
 \end{abstract}
 
