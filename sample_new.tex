@@ -16,7 +16,6 @@
 
 
 
-\usepackage{draftwatermark}
 % The following packages can be found on http:\\www.ctan.org
 %\usepackage{graphics} % for pdf, bitmapped graphics files
 %\usepackage{epsfig} % for postscript graphics files
@@ -116,56 +115,131 @@ the most recent observation of the projectile.
 
 \subsection{Path Projection}
 
-We basically use a discretized version of:
+We create a path by sampling positions from the basic formula for projectile motion:
 
 \[
-  x(t) = vt + at^2
+  \vec{x}(t) = \vec{x}_0 + \vec{v}t + {\vec{a}t^2 \over 2}
 \]
 
-where we set $a = -g$ where $g$ is some gravity constant.
+Where the arrow notation denotes a variable being a vector in the
+workspace.  This simple equation covers most of the motions in our
+application except for wind resistance. Note that by setting the
+acceleration to $\vec{0}$ the projectile will be a straight line
+resembling a straight punch. By setting $\vec{a} = -\vec{g}$ where
+$\vec{g}$ is a gravity constant we get a standard "shoot from canon"
+projectile motion. Wind is simulated by adding a random constant to
+the acceleration.
+
+\subsubsection{Deciding $\vec{x}$, $\vec{v}$, $\vec{a}$}
+
+We just saw how changing the acceleration we'll get simple models of
+different behaviors that is desired to have in our intended application.
+However, in all cases we must make sure that it will be possible at all
+to catch the thrown object, in other words, the trajectory must
+intersect the set of reachable points of the arm. To ensure that we
+introduce two new points, a \emph{random start position}, that simply is
+$\vec{x}_0$ and a \emph{random reachable position} which is a random
+point reachable by the robot arm. With these approach in mind one can
+solve for the velocity if we fix the acceleration. To simplify further
+and decrease the solution space we set that the velocity to have an
+angle of 45 degrees from the floor plane. For the wind to actually have
+a negative impact, we let the calculations of the velocity be obvlivious
+of it.
 
 \subsubsection{Distortion}
 
-We basically use a discretized version of:
+Since in later steps of the iteration the robot is going to predict the
+remaining path, we must add distortion to it to make it impossible to
+retrieve the whole original exact path again. It's hard to motivate
+any model besides simple randomness here.
 
 \[
-  x_{observed}(t) = x(t) + noise
+  \vec{x}_{observed}(t) = \vec{x}(t) + noise
 \]
 
-Some sort of wind is also an extension to this, but is modeled by setting to
-$a$ to $-g+c$ where $c$ is constant.
+Where for each discrete time step in our simulation the $noise$ is a vector
+where each coordinate is a uniform distribution in $[-\mu, \mu]$
 
 \subsection{Path Prediction}
 
-Given some sample points, we look at the last ones and work backwards from two
-assumed equations, one that models linear motion and the other models
-projectile motion. The equation
+Given some sample points, we work backwards from the equations in the
+model for path projection.  We have two prediction models, one assumes
+straight motion and the other projectile motion.  The equation
 
 \[
-  x_{observed}(t) = vt + at^2
+  \vec{x}_{observed}(t) = \vec{x}_0 + \vec{v}t + {\vec{a}t^2 \over 2}
 \]
 
 will cover both cases, only that you set $a=0$ in the linear version.
+However, only two and three data points are required to solve this
+system for the linear and quadratic version respectively, to fix that we
+simply only look at the most recent data points we require.
 
-Note that this is of course not exact as it does not compensate for the unknown
-noise, in order to compensate for the noise one can look at chunks of points as
-one point and work backwards from that.
+Note that this is of course not exact as  it does not compensate for the
+unknown noise, to compensate for the noise, one can treat a chunk of
+points  as one point by taking their average. Note that with this
+strategy we still need more points for the quadratic version. If the
+chunk sizes are to small, we won't defeat noise and if it's too small we
+won't be able to estimate the trajectory, as we must wait until we have
+enough points to create the chunks. Therfor a dynamic chunk size was
+chosen that grows with number of data points. A cap was set on the chunk
+size to avoid looking at too old and outdated data.
+
+We found both the working backwards from the equations prediction and
+the idea of chunking the data to be the simplest to implement and choose
+that over more sophisticated regression.
 
 \subsection{Inverse kinematics}
 
 Knowing the trajectory, one can use inverse kinematics to find a corresponding
 joint space configuration. We do use the pseudo inverse jacobian method.
+That is to simply iterate
 
-\subsubsection{Distance in joint space}
+\[
+  \Delta q = \mathbf{J}^{+} \Delta x
+\]
 
-We defined distance as the infinity norm.
+until convergence where $\mathbf{J}^{+} =
+\mathbf{J}^T(\mathbf{J}\mathbf{J}^T)^{-1}$.
+
 
 \subsection{Planning}
 
-We compare the results using a single goal rrt and a multi goal rrt. The multi
-goal rrt is a regular rrt only that it yields the first path that leads to any
-of the goals. When it does a greedy expansion to a goal, it randomly picks the
-goal to grow towards.
+We plan with either one of the two algorithms, the regular RRT and the
+multi-goal RRT that is introduced in this paper. Which of the two we use
+will depend on the parameters we set before we start a single
+simulation.
+
+\subsubsection{Traditional RRT}
+
+We defined distance as the infinity norm.
+
+\subsubsection{Multi-goal RRT}
+
+The multi goal RRT is working very much like the traditional one with
+the exception that there are multiple goals and reaching any one of them
+is considered a success. One might think of two different strategies for
+the multi goal rrt. The first being that you return the first path that
+leads to any of the goals and the second strategy is to make sure you've
+got a path for each goal and then return the shortest. The first one is
+always faster because it don't need to grow the tree until each goal has
+been reached. Since it also was simpler to implement we went with a
+multi goal rrt using the first strategy.
+
+What differs between a regular rrt and any of the two multi goal rrts
+kinds is only the termination condition. The single rrt continues to
+grow until the goal has been reached, the first strategy of the multi
+goal keeps growing until \emph{any} goal has been reached while the
+other strategy keeps growing the tree until \emph{all} goals have been
+reached.
+
+As for the concepts of greedy, connect and bidirectional in the rrt,
+only greedy and the connect strategy is applicable to the multi goal
+rrt, and we consider the connect strategy to defeat the purpose of the
+multi goal rrt, as if we have an extreme case where there are no objects
+to block the path, connect would just randomly pick any of the goals and
+keep growing to it and the purpose of choosing the goal with the closest
+distance with respect to objects is defeated.
 
 \subsection{Replanning}
 
@@ -174,7 +248,9 @@ of the trajectory gets available all the time.
 
 \section{EXPERIMENTS}
 
-Our test environment consisted of a 7 joint robot with only a few objects around it. All of the objects were on the ground. The object was always shot from X meters away towards the hand.
+Our test environment consisted of a 7 joint robot with only a few
+objects around it. All of the objects were on the ground. The object was
+always shot from X meters away towards the hand.
 
 In this setting single goal rrt won.
 
