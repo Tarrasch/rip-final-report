@@ -52,7 +52,7 @@ object in the future. The second sub-problem is to find a catching
 configuration. This paper focuses primarily on the second problem of finding an
 acceptable configuration. Simple models that simulate sensor inaccuracy and
 randomness are used to closely simulate real environments, and regression
-models are used to estimate the objects path in these simulated real
+models are used to estimate the object's path in these simulated real
 environments. Since multiple end configurations are acceptable as the goal, we
 introduce a new concept called a multi-goal RRT, a modified version of
 Rapidly-exploring Random Trees (RRTs), which grows towards multiple goals
@@ -75,9 +75,9 @@ able to track and intercept moving objects constitute a valuable military
 asset, as they could provide protection and tactical superiority to ground
 troops through the stoppage of missiles, grenades and harmful projectiles.
 Flying-drones would enhance their current capabilities, as they would be able
-to automatically track object of interests and intercept enemy projectiles
+to automatically track objects of interest and intercept enemy projectiles
 aimed at larger vehicles with human personnel.  Tracking and interception
-abilities also have an application in the Biology and Genetics field as
+abilities also have an application in the Biology and Genetics fields as
 researchers could benefit from automated counting and transporting of live
 cells, essential operations in many cellular engineering applications such as
 cell sorting and fusion \cite{5985660}. An ability to catch moving objects
@@ -113,11 +113,11 @@ increasing amount of sensor and environment simulated noise.
 \subsection{Solution}
 
 The solution described in this paper utilizes an algorithm which tracks the
-objects, predicts its future path, and then moves a virtual robot arm to
-intercept the object. This is done by using two different prediction
-algorithms, a linear predictor, used for punching, handshakes, etc, and a
-quadratic predictor, used for projectile objects such as trash or balls. After
-computing a predicted path a multi-goal RRT is used to move the robot arm to
+object, predicts its future path, and then moves a virtual robot arm to
+intercept it. This is done by using two different prediction
+algorithms, a linear predictor, used for straight motions such as punching, and a
+quadratic predictor, used for projectile objects such as thrown trash or balls. After
+computing a predicted path, a Multi-goal RRT is used to move the robot arm to
 intercept the object while still avoiding obstacles in its environment.
 
 
@@ -126,7 +126,7 @@ intercept the object while still avoiding obstacles in its environment.
 
 The problem of tracking and intercepting moving objects with robotic agents has
 been a well-researched topic through the combination of Computer Vision,
-Planning and Machine Learning techniques. As there are many previous efforts,
+Planning and Machine Learning techniques. As there have been many previous efforts to intercept moving objects,
 we will list key results that provide insights into the challenges of such
 endeavor. Peter Allen et al. at the University of Columbia utilized optic-flow
 techniques to track a moving object in a circular track with a PUMA robotic
@@ -168,12 +168,12 @@ Then to actually get a series of possible robot stances, inverse kinematics is
 applied to get some corresponding joint configuration for each projectile
 position. Finally, and most highlighted part in this paper, we search for the
 easiest to reach joint space configuration. It should be noted that this whole
-process is done iteratively, at fixed time steps we replan taking in account
+process is done iteratively, as at fixed time steps we replan taking into account
 the most recent observation of the projectile.
 
 \subsection{Path Projection}
 
-We create a path by sampling positions from the basic formula for projectile motion:
+We create a path by sampling positions from the formula for projectile motion:
 
 \[
   \vec{x}(t) = \vec{x}_0 + \vec{v}t + {\vec{a}t^2 \over 2}
@@ -191,7 +191,7 @@ the acceleration.
 \subsubsection{Deciding $\vec{x}$, $\vec{v}$, $\vec{a}$}
 
 We just saw how changing the acceleration we'll get simple models of
-different behaviors that is desired to have in our intended application.
+different behaviors that might be desired for our intended application.
 However, in all cases we must make sure that it will be possible at all
 to catch the thrown object, in other words, the trajectory must
 intersect the set of reachable points of the arm. To ensure that we
