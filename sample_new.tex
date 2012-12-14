@@ -86,7 +86,7 @@ the main objective is to stimulate the rehabilitation and management of
 lifelong cognitive, social and physical disorders \cite{5569021}. Robotic
 agents could motivate patients to lift objects as part of their training and
 rehabilitation, serving as playmate for ball throwing, object lifting and tool
-handling exercises. In addition, robots could monitor patient’s progress in
+handling exercises. In addition, robots could monitor patient's progress in
 order to catch drop objects and avoid injuries.
 
 We were specifically motivated to pursue this project by two ideas. One is a
@@ -115,7 +115,7 @@ increasing amount of sensor and environment simulated noise.
 The solution described in this paper utilizes an algorithm which tracks the
 objects, predicts its future path, and then moves a virtual robot arm to
 intercept the object. This is done by using two different prediction
-algorithms, a linear predictor, used for punching, handshakes, etc, and a
+algorithms, a linear predictor, used for punching, handshakes, etc., and a
 quadratic predictor, used for projectile objects such as trash or balls. After
 computing a predicted path a multi-goal RRT is used to move the robot arm to
 intercept the object while still avoiding obstacles in its environment.
@@ -143,7 +143,7 @@ For prediction, they modeled the balls’ motion as point masses (i.e. quadratic
 predictors) and implemented Kalman filters for handling noise and environment
 uncertainties. The results obtained showed a potential for having safe
 human-interactive robotic characters throughout theme parks, but much work was
-still needed in order to increase the robot’s reachable area and degrees of
+still needed in order to increase the robot's reachable area and degrees of
 freedom, both constrained during experimentation in order to facilitate the
 approach. To tackle catching objects with robots in real-time, Jan Peters et
 al. proposed in \cite{lampariello2011trajectory} the formulation of a
@@ -201,7 +201,7 @@ point reachable by the robot arm. With these approach in mind one can
 solve for the velocity if we fix the acceleration. To simplify further
 and decrease the solution space we set that the velocity to have an
 angle of 45 degrees from the floor plane. For the wind to actually have
-a negative impact, we let the calculations of the velocity be obvlivious
+a negative impact, we let the calculations of the velocity be oblivious
 of it.
 
 \subsubsection{Distortion}
@@ -239,7 +239,7 @@ points  as one point by taking their average. Note that with this
 strategy we still need more points for the quadratic version. If the
 chunk sizes are to small, we won't defeat noise and if it's too small we
 won't be able to estimate the trajectory, as we must wait until we have
-enough points to create the chunks. Therfor a dynamic chunk size was
+enough points to create the chunks. Therefor a dynamic chunk size was
 chosen that grows with number of data points. A cap was set on the chunk
 size to avoid looking at too old and outdated data.
 
@@ -250,7 +250,7 @@ that over more sophisticated regression.
 \subsection{Inverse kinematics}
 
 Knowing the trajectory, one can use inverse kinematics to find a corresponding
-joint space configuration. We do use the pseudo inverse jacobian method.
+joint space configuration. We do use the pseudo inverse Jacobian method.
 That is to simply iterate
 
 \[
@@ -271,28 +271,28 @@ start a single simulation.
 The multi goal RRT is working very much like the traditional one with
 the exception that there are multiple goals and reaching any one of them
 is considered a success. One might think of two different strategies for
-the multi goal rrt. The first being that you return the first path that
+the multi goal RRT. The first being that you return the first path that
 leads to any of the goals and the second strategy is to make sure you've
 got a path for each goal and then return the shortest. The first one is
 always faster because it don't need to grow the tree until each goal has
 been reached. Since it also was simpler to implement we went with a
-multi goal rrt using the first strategy.
+multi goal RRT using the first strategy.
 
-What differs between a regular rrt and any of the two multi goal rrts
-kinds is only the termination condition. The single rrt continues to
+What differs between a regular RRT and any of the two multi goal RRTs
+kinds is only the termination condition. The single RRT continues to
 grow until the goal has been reached, the first strategy of the multi
 goal keeps growing until \emph{any} goal has been reached while the
 other strategy keeps growing the tree until \emph{all} goals have been
 reached.
 
 As for the concepts of greedy, connect and bidirectional, only greedy and the
-connect strategy is applicable to the multi goal rrt. The original greedy
+connect strategy is applicable to the multi goal RRT. The original greedy
 strategy takes the goal and grows towards it\cite{robocup, FergusonKS06}. In
 our case we take any of the goals randomly and grow towards it. As for connect
 one would imagine growing towards a random configuration and then keep growing
 to the same configuration until one collides, just like the original connect
 algorithm does\cite{kuffner2000rrt}. We will, however, only use the greedy goal
-biasing in both our regular rrt implementation and multi-goal rrt. The reason
+biasing in both our regular RRT implementation and multi-goal RRT. The reason
 for this was to make the behavior easier to reason about than it would be if
 multiple features could cause unexpected results.
 
@@ -306,12 +306,12 @@ multiple features could cause unexpected results.
 
 Before one iteration is done and we start replanning with the most recently
 observed data we move the arm. For the simulation to be realistic, the  maximum
-distance the arm can move must be limitied for each time step. The question is
+distance the arm can move must be limited for each time step. The question is
 how distance is measured, or rather in which norm. Most realistically for our
 application might have been the infinity norm, which means that all joints are
 allowed to rotate a fixed amount of degrees independent of each other.
 Regardless of that we used regular euclidean distance, the two norm. The reason
-is that we set the step size parameter to the rrt and interpret the second
+is that we set the step size parameter to the RRT and interpret the second
 position in its returned path as the next position for the arm.
 
 With the joints configured to their new angles, we increase the
@@ -332,10 +332,10 @@ according to the following criteria: (i) success rate given an amount of noise,
 RRT-variants and predictors, (iii) completion time given an amount of noise.
 Success rate was defined as the amount of times the arm was able to intercept
 the moving sphere divided by the total number of simulations (i.e. a
-percentage). The workspace distance d between the arm’s end-effector and the
+percentage). The workspace distance $d$ between the arm's end-effector and the
 moving sphere was repeatedly calculated in order to determine whether an
-interception had occurred. If d was less than a given threshold t, then the arm
-successfully intercepted the moving sphere. In this case, t was set to the
+interception had occurred. If $d$ was less than a given threshold $t$, then the arm
+successfully intercepted the moving sphere. In this case, $t$ was set to the
 radius of the sphere (i.e. 0.12).  The graphs shown below summarize the results
 of the experiments undertaken. Their connotations and insights will be analyzed
 in the following section.
@@ -382,9 +382,9 @@ when employing the Linear predictor. When the approaches utilize the
 Quadratic predictors their success rates drop by a combined average of 8
 percent units. In this case, the Multi-goal approach achieves a
 noticeably lower success rate. With a significant increase in sensor
-noise, the robotic arm’s perceived sphere path does not longer follow
+noise, the robotic arm's perceived sphere path does not longer follow
 projectile motion characteristics as the sphere bounces around. In this
-case, the Quadratic predictor in a way overfits the model as it uses 3
+case, the Quadratic predictor in a way over fits the model as it uses 3
 averaging points to predict a curved motion. The Linear predictor only
 predicts line trajectories that with a clutter of perceived points yield
 higher accuracy rates.
@@ -443,41 +443,61 @@ reachable points of the sphere trajectories. When any goal is reached,
 reaching the rest is not computationally expensive as these points are
 expected to be mostly close in space and time. Single-goal RRTs in
 contrast, constantly expands the tree towards the closest point in terms
-of joint-space distance, thus taking longer to get there.
+of joint space distance, thus taking longer to get there.
+
+
+
+We examined projectile path's through passing reachable areas surrounded
+with obstacles to determine the qualitative difference between the RRT
+kinds. Figure \ref{fig:visrrts} shows two resulting configurations for
+Multi-goal and Single-goal RRTs given the same projectile path. Above
+80\% of the time, the Multi-goal RRT choose to catch the object before it
+collided with the object, while Single-goal RRT usually waited for the
+object in the later parts of the motion. We believe such behavior is due
+to the fact that the Single-goal RRT picks the closest point in terms of
+joint space distance and in this case, such point is located in the
+space after the sphere passes through the obstacle. In a sense,
+Single-goal RRT is a lazy approach, as it will try to intercept the
+moving sphere with the minimum joint effort possible. On the other hand,
+Multi-goal RRT considers all points in the reachable object trajectory,
+and when any of them is reached, it returns a path to follow. This
+implementation generally tries to catch objects at earlier times as this
+allows for some leniency in terms of replanning if its not able to catch
+the moving sphere.
 
 \section{DISCUSSION}
 
 It would be interesting to test the algorithms in an environment where
 there are more objects that the arm can't touch. Such experiments might
-lift the potential from multi goal rrts,  if a multi goal rrt should
-prove useful against the single goal rrt aimed at the closest goal, it
+lift the potential from multi goal RRTs,  if a multi goal RRT should
+prove useful against the single goal RRT aimed at the closest goal, it
 must expand a towards a more distant goal which in fact is closer with
 respect to there being objects in the way for reaching the close goal.
 While there might be many factors for the results for figure
 \ref{fig:runtimes}, one might guess that the approximately equal
-runtimes was due to that they reached their goal in the same amount of
+run times was due to that they reached their goal in the same amount of
 steps and that is because the closest goal without respect to object was
 the same goal with respect to objects. On the other hand then one might
-expect their perforemence over all be quite similar which it appears not
+expect their performance over all be quite similar which it appears not
 to be from figure \ref{fig:noise} and \ref{fig:rrts}, maybe it's
-decrease in performence was simply due to it usually founds the same
+decrease in performance was simply due to it usually founds the same
 closest object but occasionally in between the iterations detours to
 another goal making it somewhat more clumsy.
 
 Another idea stemming from the discussion above is to not actually do
-replanning, since the nature of randomness in the rrt makes it unoptimal
-and it would be better to commiting to trying to reach one particular
+replanning, since the nature of randomness in the RRT makes it non optimal
+and it would be better to committing to trying to reach one particular
 stance rather than reevaluating the situation all the time and go for
 occasional detours. A great future work would be to actually analyze if
-the multi goal rrt does take detours or not.
+the multi goal RRT does take detours or not.
 
-We mentioned an alternative strategy for the multi goal rrt.  The strategy
+We mentioned an alternative strategy for the multi goal RRT.  The strategy
 basically was to not stop once it reaches it's first goal, instead
 expanding until it hits all goals and then pick the one with the
 shortest path. The idea is that this should not be computationally
 expensive at all because
 
-As an extra benefit to both rrt planners, path shortening could be
+As an extra benefit to both RRT planners, path shortening could be
 applied. Here one can also try to use some sort of lazy path shortening,
 utilizing the fact that since replanning occurs so often you only need
 to know the beginning of a plan.
@@ -485,7 +505,7 @@ to know the beginning of a plan.
 It must also be said that the most obvious improvements for actually
 having a good moving object interceptor would be to improve upon the
 path prediction, using standard tools like linear/quadratic regression
-or kalman filters.
+or Kalman filters.
 
 \bibliographystyle{plain}
 \bibliography{mybib}
