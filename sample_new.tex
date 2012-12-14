@@ -320,24 +320,30 @@ we allow our path predictor is fed with more points in the observed trajectory.
 
 \section{EXPERIMENTS}
 
-The experimentation and accompanied development were targeted towards (1)
-determining the robustness of the approaches presented to noise sources and (2)
-selecting the best combination of predictors and RRT-variants for use in a
-future non-simulated setting. The overall approach presented in the previous
-sections was tested in the DART/GRIP environment through a developed interface
-that allowed for the specification of different amounts of noise, number of
-simulations, predictor type, among other parameters.  The results were analyzed
-according to the following criteria: (i) success rate given an amount of noise,
-(ii) success rate vs. increasing amounts of noise for different combinations of
-RRT-variants and predictors, (iii) completion time given an amount of noise.
-Success rate was defined as the amount of times the arm was able to intercept
-the moving sphere divided by the total number of simulations (i.e. a
-percentage). The workspace distance $d$ between the arm's end-effector and the
-moving sphere was repeatedly calculated in order to determine whether an
-interception had occurred. If $d$ was less than a given threshold $t$, then the arm
-successfully intercepted the moving sphere. In this case, $t$ was set to the
-radius of the sphere (i.e. 0.12).  The graphs shown below summarize the results
-of the experiments undertaken. Their connotations and insights will be analyzed
+The experimentation and accompanied development were targeted towards
+(1) determining the robustness of the approaches presented to noise
+sources and (2) selecting the best combination of predictors and
+RRT-variants for use in a future non-simulated setting. The overall
+approach presented in the previous sections was tested in the DART/GRIP
+environment through a developed interface that allowed for the
+specification of different amounts of noise, number of simulations,
+predictor type, among other parameters. In order to visualize the
+implementation's behavior, additional markers were added as shown in
+Figure \ref{fig:legends} to show the arm's perceived location of the
+ball, the predicted location of the ball and the current-best prediction
+to be used for final interception. The results were analyzed according
+to the following criteria: (i) success rate given an amount of noise,
+(ii) success rate vs. increasing amounts of noise for different
+combinations of RRT-variants and predictors, (iii) completion time given
+an amount of noise.  Success rate was defined as the amount of times the
+arm was able to intercept the moving sphere divided by the total number
+of simulations (i.e. a percentage). The workspace distance $d$ between
+the arm's end-effector and the moving sphere was repeatedly calculated
+in order to determine whether an interception had occurred. If $d$ was
+less than a given threshold $t$, then the arm successfully intercepted
+the moving sphere. In this case, $t$ was set to the radius of the sphere
+(i.e. $0.12$).  The graphs shown below summarize the results of the
+experiments undertaken. Their connotations and insights will be analyzed
 in the following section.
 
 \section{ANALYSIS}
@@ -394,7 +400,7 @@ higher accuracy rates.
         \begin{subfigure}[b]{0.22\textwidth}
                 \centering
                 \includegraphics[width=\textwidth]{fig/multi}
-                \caption{Multi goal RRT}
+                \caption{Multi-goal RRT}
                 \label{fig:multi}
         \end{subfigure}%
         ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc. 
@@ -402,7 +408,7 @@ higher accuracy rates.
         \begin{subfigure}[b]{0.24\textwidth}
                 \centering
                 \includegraphics[width=\textwidth]{fig/single}
-                \caption{Single goal RRT}
+                \caption{Single-goal RRT}
                 \label{fig:single}
         \end{subfigure}
         ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc. 
@@ -445,10 +451,37 @@ expected to be mostly close in space and time. Single-goal RRTs in
 contrast, constantly expands the tree towards the closest point in terms
 of joint space distance, thus taking longer to get there.
 
+\begin{figure}
+        \centering
+        \begin{subfigure}[b]{0.4\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{fig/vismulti}
+                \caption{Multi-goal RRT}
+                \label{fig:vismulti}
+        \end{subfigure}%
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc. 
+          %(or a blank line to force the subfigure onto a new line)
+        \\
+        \begin{subfigure}[b]{0.4\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{fig/vissingle}
+                \caption{Single-goal RRT}
+                \label{fig:vissingle}
+        \end{subfigure}
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc. 
+          %(or a blank line to force the subfigure onto a new line)
+        \caption{Comparison of intercepting locations for the two RRTs.
+        See figure \ref{fig:legends} for the legend of the shapes}\label{fig:visrrts}
+\end{figure}
 
+\begin{figure}
+        \centering
+        \includegraphics[width=3in]{fig/legends}
+        \caption{Legend for figure \ref{fig:visrrts}}\label{fig:legends}
+\end{figure}
 
-We examined projectile path's through passing reachable areas surrounded
-with obstacles to determine the qualitative difference between the RRT
+We examined projectile paths passing through reachable areas surrounded
+with obstacles to determine more differences between the RRT
 kinds. Figure \ref{fig:visrrts} shows two resulting configurations for
 Multi-goal and Single-goal RRTs given the same projectile path. Above
 80\% of the time, the Multi-goal RRT choose to catch the object before it
@@ -464,6 +497,8 @@ and when any of them is reached, it returns a path to follow. This
 implementation generally tries to catch objects at earlier times as this
 allows for some leniency in terms of replanning if its not able to catch
 the moving sphere.
+
+
 
 \section{DISCUSSION}
 
