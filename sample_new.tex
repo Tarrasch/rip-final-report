@@ -103,9 +103,40 @@ intercept the object while still avoiding obstacles in its environment.
 
 \section{RELATED WORK}
 
-An extension of RRTs for multi goal purposes is introduced here. There are also
-other approaches to solving multi-goal motion planning (add referencess). As
-for the modeling of the projectile motion, nothing is used from academia.
+The problem of tracking and intercepting moving objects with robotic agents has
+been a well-researched topic through the combination of Computer Vision,
+Planning and Machine Learning techniques. As there are many previous efforts,
+we will list key results that provide insights into the challenges of such
+endeavor. Peter Allen et al. at the University of Columbia utilized optic-flow
+techniques to track a moving object in a circular track with a PUMA robotic
+arm. Most importantly, they separated the perceived coordinates into a XY plane
+and a Z-axis, modeled motion through derivations of velocity and curvature, and
+ran a developed filtering method to handle noise sources and estimate arc and
+bending characteristics \cite{Allen91automatedtracking}. Their results
+showcased a robust enough method able to repeatedly pick up an object moving in
+a planar surface and grasp it.  More recently, Jens Kober et al. at Disney
+Research developed tracking and prediction methods to allow a robot to play
+catch and juggle a ball \cite{koberplaying}. In their approach, they utilized
+Hough-transforms to track the moving balls through an external camera system.
+For prediction, they modeled the balls’ motion as point masses (i.e. quadratic
+predictors) and implemented Kalman filters for handling noise and environment
+uncertainties. The results obtained showed a potential for having safe
+human-interactive robotic characters throughout theme parks, but much work was
+still needed in order to increase the robot’s reachable area and degrees of
+freedom, both constrained during experimentation in order to facilitate the
+approach. To tackle catching objects with robots in real-time, Jan Peters et
+al. proposed in \cite{lampariello2011trajectory} the formulation of a
+non-linear constrained-optimization problem where the desired trajectories are
+encoded through parametric representation. The result of such optimization is
+then used through Nearest Neighbor, Support Vector Machines and Gaussian
+regression to allow a real-time execution. Their results showcases the
+trade-offs between computational time and accuracy for real-time operations, as
+accuracy in prediction must be satisfied in order for the robot to be able to
+catch the moving object. In this project, we wish to explore the initial
+feasibility of using RRTs variants for intercepting moving objects in a
+simulated environment. Although RRTs have been extensively used in the planning
+domains, no relevant previous work was found where such technique was
+specifically used for object interception.
 
 \section{METHODS}
 
