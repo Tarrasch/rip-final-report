@@ -306,27 +306,21 @@ multiple features could cause unexpected results.
 % growing to it and the purpose of choosing the goal with the closest distance
 % with respect to objects is defeated.
 
-\subsubsection{Arm speed and using the path}
-
-
-
 \subsection{Replanning, Discretization and Arm Speed}
 
-Before one iteration is done and we start replanning with the most
-recently observed data we move the arm. For the simulation to be
-realistic, the  maximum distance the arm can move must be limitied for
-each time step. The question is how distance is measured, or rather in
-which norm. Most realistically for our application might have been the
-infinity norm, which means that all joints are allowed to rotate a fixed
-amount of degrees independent of each other. Regardless of that we used
-regular euclidean distance, the two norm. The reason is that it was easy
-to implement because you can set the step size parameter to the rrt and
-interpret the second position it its returned path as the next position
-for the arm.
+Before one iteration is done and we start replanning with the most recently
+observed data we move the arm. For the simulation to be realistic, the  maximum
+distance the arm can move must be limitied for each time step. The question is
+how distance is measured, or rather in which norm. Most realistically for our
+application might have been the infinity norm, which means that all joints are
+allowed to rotate a fixed amount of degrees independent of each other.
+Regardless of that we used regular euclidean distance, the two norm. The reason
+is that we set the step size parameter to the rrt and interpret the second
+position in its returned path as the next position for the arm.
 
-With the joints configured to their now angles, we increase the
+With the joints configured to their new angles, we increase the
 simulation time by the fixed $\Delta t$ and keep iterating and replan as
-more information of the trajectory gets available when time increases.
+we allow our path predictor is fed with more points in the observed trajectory.
 
 \section{EXPERIMENTS}
 
