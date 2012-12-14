@@ -53,14 +53,13 @@ configuration. This paper focuses primarily on the second problem of finding an
 acceptable configuration. Simple models that simulate sensor inaccuracy and
 randomness are used to closely simulate real environments, and regression
 models are used to estimate the objects path in these simulated real
-environments. Since multiple end configurations are acceptable as the goal is
-simply to catch the object, a multi-goal RRT, a modified version of
-Rapidly-exploring Random Trees (RRTs), grows towards multiple goals
+environments. Since multiple end configurations are acceptable as the goal, we
+introduce a new concept called a multi-goal RRT, a modified version of
+Rapidly-exploring Random Trees (RRTs), which grows towards multiple goals
 simultaneously. This approach was implemented in an attempt to have the RRT
 grow toward several predicted path nodes. The multi-goal RRT was compared
-against a regular RRT that constantly performs re-planning to the closest
-point. The results show promise for the application of Multi-goal in a
-real-world setting.
+against a regular RRT. The results show promise for the application of
+Multi-goal in a real-world setting.
 
 \end{abstract}
 
@@ -341,17 +340,20 @@ radius of the sphere (i.e. 0.12).  The graphs shown below summarize the results
 of the experiments undertaken. Their connotations and insights will be analyzed
 in the following section.
 
+\section{ANALYSIS}
+
 \begin{figure}
         \centering
-        \begin{subfigure}[b]{0.25\textwidth}
+        \begin{subfigure}[b]{0.5\textwidth}
                 \centering
                 \includegraphics[width=\textwidth]{fig/noise-005}
                 \caption{$\mu = 0.05$}
                 \label{fig:noise-005}
         \end{subfigure}%
+        \\
         ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc. 
           %(or a blank line to force the subfigure onto a new line)
-        \begin{subfigure}[b]{0.2\textwidth}
+        \begin{subfigure}[b]{0.5\textwidth}
                 \centering
                 \includegraphics[width=\textwidth]{fig/noise-009}
                 \caption{$\mu = 0.09$}
@@ -361,43 +363,6 @@ in the following section.
           %(or a blank line to force the subfigure onto a new line)
         \caption{Success rates for combinations of Multi-Goal RRT, Single-RRT, Linear and Quadratic predictors after 100 simulations having varying noise $\mu$}\label{fig:noise}
 \end{figure}
-
-
-\begin{figure}
-        \centering
-        \begin{subfigure}[b]{0.22\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{fig/multi}
-                \caption{Multi goal RRT}
-                \label{fig:multi}
-        \end{subfigure}%
-        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc. 
-          %(or a blank line to force the subfigure onto a new line)
-        \begin{subfigure}[b]{0.24\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{fig/single}
-                \caption{Single goal RRT}
-                \label{fig:single}
-        \end{subfigure}
-        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc. 
-          %(or a blank line to force the subfigure onto a new line)
-        \caption{Average RRT success rates versus increasing noise
-        with Linear Predictor; 10 simulations for each increase in 0.05
-      noise}\label{fig:rrts}
-\end{figure}
-
-\begin{figure}
-        \centering
-        \includegraphics[width=3in]{fig/runtimes}
-        \caption{Average times for Single-goal and
-        Multi-goal RRTs after 100 simulations with both Linear and
-      Quadratic predictors where $\mu = 0.05$}\label{fig:runtimes}
-\end{figure}
-
-
-
-
-\section{ANALYSIS}
 
 Figure \ref{fig:noise-005} shows the success rates for combinations of
 Multi-goal and Single-goal with Linear and Quadratic predictors after
@@ -424,7 +389,28 @@ averaging points to predict a curved motion. The Linear predictor only
 predicts line trajectories that with a clutter of perceived points yield
 higher accuracy rates.
 
-% TODO ---Add analysis of why Multi does badly with Quadratic---
+\begin{figure}
+        \centering
+        \begin{subfigure}[b]{0.22\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{fig/multi}
+                \caption{Multi goal RRT}
+                \label{fig:multi}
+        \end{subfigure}%
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc. 
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.24\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{fig/single}
+                \caption{Single goal RRT}
+                \label{fig:single}
+        \end{subfigure}
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc. 
+          %(or a blank line to force the subfigure onto a new line)
+        \caption{Average RRT success rates versus increasing noise
+        with Linear Predictor; 10 simulations for each increase in 0.05
+      noise}\label{fig:rrts}
+\end{figure}
 
 Figure \ref{fig:rrts} depict the performance of both the Single-goal and
 Multi-goal RRT approaches as the noise amount increases. A Linear
@@ -440,6 +426,14 @@ naive approaches to tackle such noise and uncertainty scenarios. A more
 thorough analysis of these approaches’ response in noisy situations
 would be achieved through known regression and estimation techniques.
 Time constraints forced these topics to be considered for future work.
+
+\begin{figure}
+        \centering
+        \includegraphics[width=3in]{fig/runtimes}
+        \caption{Average times for Single-goal and
+        Multi-goal RRTs after 100 simulations with both Linear and
+      Quadratic predictors where $\mu = 0.05$}\label{fig:runtimes}
+\end{figure}
 
 At last, Figure \ref{fig:runtimes} presents the average execution times
 during 100 simulations of Single-goal and Multi-goal RRTs with Linear
