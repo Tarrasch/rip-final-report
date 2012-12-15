@@ -1,6 +1,3 @@
-set terminal pdf
-set output "noise-009.pdf"
-
 set boxwidth 0.9 absolute
 set style fill   solid 1.00 border lt -1
 set key inside left top vertical Right noreverse noenhanced autotitles nobox
@@ -14,5 +11,4 @@ set yrange [70:100]
 set xtics border in scale 0,0 nomirror rotate by -45  offset character 0, 0, 0
 set ylabel "Success Rate"
 
-plot 'noise-009.dat' using 2:xticlabels(1) ti col, '' using 3 ti col
-
+plot 'fig/noise-009.dat' using 2:xticlabels(1) ti col, '' using 3 ti col
