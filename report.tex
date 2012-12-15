@@ -30,7 +30,7 @@
 Interception of moving objects with a robotic arm in a simulated environment
 }
 
-\author{Juan Garcia, Harrison Jones and Arash Rouhani*
+\author{Juan C. Garcia, Harrison Jones and Arash Rouhani*
   \thanks{\texttt{*\{jgarcia39,harrisonhjones,rarash\}@gatech.edu}}
 }
 
@@ -263,10 +263,9 @@ until convergence where $\mathbf{J}^{+} =
 
 \subsection{Planning}
 
-We plan with either one of the two algorithms, the regular RRT
+Either one of the two algorithms are used for planning, the regular RRT
 \cite{lavalle2001randomized} and the multi-goal RRT that is introduced in this
-paper. Which of the two we use will depend on the parameters we set before we
-start a single simulation.
+paper. Their final selection depends on the parameters set before a simulation is started.
 
 The multi goal RRT is working very much like the traditional one with
 the exception that there are multiple goals and reaching any one of them
@@ -459,8 +458,8 @@ of joint space distance, thus taking longer to get there.
         }\label{fig:visrrts}
 \end{figure}
 
-We examined projectile paths passing through reachable areas surrounded
-with obstacles to determine more differences between the RRT
+Additionally, projectile paths passing through reachable areas surrounded
+with obstacles were examined to determine further differences between the RRT
 kinds. Figure \ref{fig:visrrts} shows two resulting configurations for
 Multi-goal and Single-goal RRTs given the same projectile path. Above
 80\% of the time, the Multi-goal RRT choose to catch the object before it
@@ -474,7 +473,7 @@ moving sphere with the minimum joint effort possible. On the other hand,
 Multi-goal RRT considers all points in the reachable object trajectory,
 and when any of them is reached, it returns a path to follow. This
 implementation generally tries to catch objects at earlier times as this
-allows for some leniency in terms of replanning if its not able to catch
+allows for some leniency in terms of replanning if the arm is not able to catch
 the moving sphere.
 
 
@@ -505,7 +504,7 @@ stance rather than reevaluating the situation all the time and go for
 occasional detours. A great future work would be to actually analyze if
 the multi goal RRT does take detours or not.
 
-We mentioned an alternative strategy for the multi goal RRT.  The strategy
+We mentioned an alternative strategy for the Multi-goal RRT.  The strategy
 basically was to not stop once it reaches it's first goal, instead
 expanding until it hits all goals and then pick the one with the
 shortest path. The idea is that this should not be computationally
@@ -516,7 +515,7 @@ applied. Here one can also try to use some sort of lazy path shortening,
 utilizing the fact that since replanning occurs so often you only need
 to know the beginning of a plan.
 
-It must also be said that the most obvious improvements for actually
+It must also be said that the most obvious step for actually
 having a good moving object interceptor would be to improve upon the
 path prediction, using standard tools like linear/quadratic regression
 or Kalman filters.
