@@ -296,12 +296,6 @@ biasing in both our regular RRT implementation and multi-goal RRT. The reason
 for this was to make the behavior easier to reason about than it would be if
 multiple features could cause unexpected results.
 
-% We consider the connect strategy to defeat the purpose of the
-% multi goal rrt, as if we have an extreme case where there are no objects to
-% block the path, connect would just randomly pick any of the goals and keep
-% growing to it and the purpose of choosing the goal with the closest distance
-% with respect to objects is defeated.
-
 \subsection{Replanning, Discretization and Arm Speed}
 
 Before one iteration is done and we start replanning with the most recently
@@ -397,25 +391,10 @@ higher accuracy rates.
 
 \begin{figure}
         \centering
-        \begin{subfigure}[b]{0.22\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{fig/multi}
-                \caption{Multi-goal RRT}
-                \label{fig:multi}
-        \end{subfigure}%
-        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc. 
-          %(or a blank line to force the subfigure onto a new line)
-        \begin{subfigure}[b]{0.24\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{fig/single}
-                \caption{Single-goal RRT}
-                \label{fig:single}
-        \end{subfigure}
-        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc. 
-          %(or a blank line to force the subfigure onto a new line)
+        \includegraphics[width=2.8in]{fig/rrts}
         \caption{Average RRT success rates versus increasing noise
         with Linear Predictor; 10 simulations for each increase in 0.05
-      noise}\label{fig:rrts}
+      the noise $\mu$}\label{fig:rrts}
 \end{figure}
 
 Figure \ref{fig:rrts} depict the performance of both the Single-goal and
